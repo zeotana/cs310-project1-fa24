@@ -97,7 +97,7 @@ public class ClassSchedule {
         json.put("course", courses);
         json.put("section", sections);
         
-        return json.toJson(); // remove this!
+        return json.toJson();
         
     }
     
