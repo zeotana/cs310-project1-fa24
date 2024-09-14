@@ -33,8 +33,71 @@ public class ClassSchedule {
     private final String SUBJECTID_COL_HEADER = "subjectid";
     
     public String convertCsvToJsonString(List<String[]> csv) {
+        JsonObject json = new JsonObject();
         
-        return ""; // remove this!
+        JsonObject scheduleType = new JsonObject();
+        scheduleType.put("LEC", "In-Person Instruction");
+        scheduleType.put("ONL", "Online (asynchronous)");
+        json.put("scheduletype", scheduleType);
+        
+        JsonObject subjects = new JsonObject();
+        subjects.put("CS", "Computer Science");
+        subjects.put("EH", "English");
+        subjects.put("HY","History");
+        subjects.put("MS", "Mathmatics");
+        json.put("subject", subjects);
+        
+        JsonObject courses = new JsonObject();
+        JsonArray sections = new JsonArray();
+        
+        String[] headers = csv.get(0);
+        
+        for(int i = i; i < csv.size(); i++){
+            String[]row = csv.get(i);
+            String crn = row [0];
+            String subject = row [1];
+            String num = row[2];
+            String description = row[3];
+            String sectionNum = row[4];
+            String type = row[5];
+            String credits = row[6];
+            String start = row[7];
+            String end = row[8];
+            String days = row[9];
+            String where = row[10];
+            String instructor = row[11];
+            
+            String courseId = subject + " " + num;
+            if (!courses.containsKey(courseId)){
+                JsonObject course = new JsonObject();
+                course.put("subjectid", subject);
+                course.put("num", num);
+                course.put("description", description);
+                course.put("credits", credits);
+                courses.put(courseId, course);
+            }
+            JsonObject section = new JsonObject();
+            section.put("crn", crn);
+            section.put("subjectid", subject);
+            section.put("num", num);
+            section.put("section", sectionNum);
+            section.put("type", type);
+            section.put("start", start);
+            section.put("end", end);
+            section.put("days", days);
+            section.put("where", where);
+            
+            JsonArray instructors = new JsonArray();
+            instructors.add(instructor);
+            section.put("instructor", instructors);
+            
+            sections.add(section);
+          
+        }
+        json.put("course", courses);
+        json.put("section", sections);
+        
+        return json.toJson(); // remove this!
         
     }
     
