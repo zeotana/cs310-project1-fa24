@@ -52,7 +52,7 @@ public class ClassSchedule {
         
         String[] headers = csv.get(0);
         
-        for(int i = i; i < csv.size(); i++){
+        for(int i = 1; i < csv.size(); i++){
             String[]row = csv.get(i);
             String crn = row [0];
             String subject = row [1];
@@ -73,7 +73,7 @@ public class ClassSchedule {
                 course.put("subjectid", subject);
                 course.put("num", num);
                 course.put("description", description);
-                course.put("credits", credits);
+                course.put("credits",credits);
                 courses.put(courseId, course);
             }
             JsonObject section = new JsonObject();
@@ -102,8 +102,36 @@ public class ClassSchedule {
     }
     
     public String convertJsonToCsvString(JsonObject json) {
+        String[] headers = {SUBJECTID_COL_HEADER, SCHEDULE_COL_HEADER, CRN_COL_HEADER, SUBJECT_COL_HEADER, NUM_COL_HEADER, DESCRIPTION_COL_HEADER, SECTION_COL_HEADER, TYPE_COL_HEADER, CREDITS_COL_HEADER, START_COL_HEADER, END_COL_HEADER, DAYS_COL_HEADER, WHERE_COL_HEADER, INSTRUCTOR_COL_HEADER};
+        csvWriter.writeNext(headers);
         
-        return ""; // remove this!
+        JsonObject courses = (JsonObject) json.get("course");
+        JsonArray sections = (JsonArray) json.get("section");
+        
+        for (Object sectionObj : sections){
+            JsonObject section = (JsonObject) sectionObj;
+            
+            String crn = (String) section.get("crn");
+            String subjectId = (String) section.get("subjectid");
+            String num = (String) section.get("num");
+            String sectionNum = (String) section.get("section");
+            String type = (String) section.get("type");
+            String start = (String) section.get("start");
+            String end = (String) section.get("end");
+            String days = (String) section.get("days");
+            String where = (String) section.get("where");
+            String instructor = section.get("instructor").toString();
+            
+            String courseId = subjectId + " " + num;
+            JsonObject course = (JsonObject) courses.get(courseId);
+            String description = (String) course.get("description");
+            String credits = (String) course.get("credits");
+            
+             String[] row = {crn, subjectId, num, description, sectionNum, type, credits, start, end, days, where, instructor};
+             csvWriter.writeNext(row);
+        }
+
+        return writer.toString();
         
     }
     
